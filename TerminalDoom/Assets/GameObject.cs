@@ -6,11 +6,7 @@ using System.Threading.Tasks;
 
 namespace TerminalDoom
 {
-    internal class Renderer
+    internal class GameObject
     {
-        public static void Render(GameState gameState)
-        {
-            Console.WriteLine(gameState.player.FOV);
-        }
     }
 }

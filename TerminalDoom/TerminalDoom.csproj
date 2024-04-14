@@ -43,7 +43,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Coords.cs" />
     <Compile Include="Assets\Map.cs" />
+    <Compile Include="Assets\GameObject.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="Initialization\Initialize.cs" />
     <Compile Include="MainGameLoop\GameLogic.cs" />
     <Compile Include="Assets\Player.cs" />
     <Compile Include="Initialization\Menu.cs" />
