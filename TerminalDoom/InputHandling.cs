@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace TerminalDoom
 {
-    internal class UserInput
+    internal class InputHandling
     {
-
     }
 }

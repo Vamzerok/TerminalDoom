@@ -3,18 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TerminalDoom.Assets;
 
-namespace TerminalDoom
+namespace TerminalDoom.Assets
 {
-    internal class Player : GameObject
+    internal class Enemy : GameObject
     {
-        public int FOV { get; set; }
-        public Player(int fov, Coords position, float angle)
+        public Enemy(Coords position, float angle, float speed)
         {
-            this.FOV = fov;
             this.Pos = position;
             this.Angle = angle;
+            this.Speed = speed;
         }
     }
 }

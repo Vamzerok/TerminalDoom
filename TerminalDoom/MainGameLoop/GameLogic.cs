@@ -9,7 +9,8 @@ namespace TerminalDoom
 {
     internal class GameLogic
     {
-        public static GameState Update(GameState gameState)
+        //TODO: Player mozogjon user inputnak megfelelően
+        public static GameState Update(GameState gameState, string input)
         {
             return gameState;
         }

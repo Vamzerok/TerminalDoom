@@ -15,5 +15,7 @@ namespace TerminalDoom
         public Map map;
 
         public bool exit;
+
+
     }
 }
