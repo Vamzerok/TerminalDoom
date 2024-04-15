@@ -28,13 +28,16 @@ namespace TerminalDoom
             byte[] framebuff = new byte[((Console.BufferHeight - 1) * Console.BufferWidth)];
             int[] inputbuff = new int[4];
 
+            //only for debugging
             string Path = $"./{DateTime.Now.Month}{DateTime.Now.Day}.txt";
             string comment = "User input test";
             File.AppendAllText(Path, $"\n------------------------\t[{comment}]\n");
 
             Stream STDOUT = Console.OpenStandardOutput();
             Stream STDIN = Console.OpenStandardInput();
-            StreamReader STDINRead = new StreamReader(STDIN);
+            StreamReader sr = new StreamReader(STDIN);
+            char[] input = new char[6];
+            sr.ReadAsync(input, 0, 6);
 
             Stopwatch stopw = new Stopwatch();
             long prevFrame = 0;
@@ -47,13 +50,19 @@ namespace TerminalDoom
             {
                 long frameCalculationStart = stopw.ElapsedMilliseconds;
                 //------------//------------//------------//------------//start measurement 
-                
+
+                //user input
+                //UserInput.GetInput(sr);
+               
+
+                Thread.Sleep(500);
+
                 //game logic
-                gameState = GameLogic.Update(gameState,"a");
+                gameState = GameLogic.Update(gameState,"");
 
                 //renderer
-                framebuff = Renderer.Render(gameState, framebuff);
-                Renderer.DrawScreen(framebuff, STDOUT);
+                //framebuff = Renderer.Render(gameState, framebuff);
+                //Renderer.DrawScreen(framebuff, STDOUT);
 
                 //------------//------------//------------//------------//end measurement 
                 count++;
