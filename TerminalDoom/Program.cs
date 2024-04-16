@@ -45,7 +45,7 @@ namespace TerminalDoom
             int countUntilQuit = 5;
             stopw.Start();
 
-            UserInputListener listener = new UserInputListener();
+            Renderer rend = new Renderer(gameState);
             
             //-------------[Main gameloop - Start] ------------- 
             while (true)
@@ -54,18 +54,13 @@ namespace TerminalDoom
                 //------------//------------//------------//------------//start measurement 
 
 
-                Thread.Sleep(500);
-
                 //game logic
                 gameState = GameLogic.Update(gameState,"");
 
                 //renderer
-                framebuff = Renderer.Render(gameState, framebuff);
-                Renderer.DrawScreen(framebuff, STDOUT);
-                if (Console.KeyAvailable)
-                {
-                    Console.ReadKey();
-                }
+                rend.Render(gameState);
+                Console.ReadKey();
+                //Renderer.DrawScreen(framebuff, STDOUT);
 
                 //------------//------------//------------//------------//end measurement 
                 count++;
