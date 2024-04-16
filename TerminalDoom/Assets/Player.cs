@@ -9,12 +9,15 @@ namespace TerminalDoom
 {
     internal class Player : GameObject
     {
+        public bool shoot;
         public int FOV { get; set; }
         public Player(int fov, Coords position, float angle)
         {
             this.FOV = fov;
             this.Pos = position;
             this.Angle = angle;
+
+            this.shoot = false;
         }
     }
 }

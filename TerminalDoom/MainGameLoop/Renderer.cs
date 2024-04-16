@@ -12,13 +12,13 @@ namespace TerminalDoom
     {
         private GameState GameState;
 
-        private double ScreenHeight;
-        private double ScreenWidth;
+        private int ScreenHeight;
+        private int ScreenWidth;
         private double ScreenHalfWidth;
         private double ScreeenHalfHeight;
         private double PlayerHalfFov;
         private double RayCasterIncrementAngle;
-        private char[] Gradient;
+        private string Gradient;
 
         private double RayCastingPrecision;
 
@@ -31,9 +31,9 @@ namespace TerminalDoom
             return Math.PI * degrees / 180 ;
         }
 
-        internal int ConvertToFramebuffCoords(int x, int y)
+        internal int ConvertToFramebuffCoords(int left, int top)
         {
-            return framebuff.Length * y + x;
+            return ScreenWidth * top + left;
         }
 
         internal void DrawLineToFrameBuff(int x1, int y1, int x2, int y2, char gradient)
@@ -43,46 +43,56 @@ namespace TerminalDoom
             //framebuff[p]
         }
 
-        internal void RacCaster()
+        internal double CastRay(double rayAngle)
+        {
+            Coords ray = new Coords(GameState.player.Pos.x, GameState.player.Pos.y);
+
+            double rayCos = Math.Cos(DegToRad(rayAngle)) / RayCastingPrecision;
+            double raySin = Math.Sin(DegToRad(rayAngle)) / RayCastingPrecision;
+
+            //findig wall
+            bool foundWall = false;
+            Coords currentSearch = new Coords(); 
+            //Coords wall = new Coords();
+            while (!foundWall)
+            {
+                ray.x += rayCos;
+                ray.y += raySin;
+
+                currentSearch.x = Math.Floor(ray.x);
+                currentSearch.y = Math.Floor(ray.y);
+
+                if (GameState.map.GetValueAtRealPosition(currentSearch.x, currentSearch.y) == 1) //this can go out of bounds 
+                {
+                    foundWall = true;
+                    //wall.x = currentSearch.x;
+                    //wall.y = currentSearch.y;
+                }
+            }
+
+            double playerRayXDelta = GameState.player.Pos.x - ray.x;
+            double playerRayYDelta = GameState.player.Pos.y - ray.y;
+            // Pythagoras theorem
+            return Math.Sqrt(Math.Pow(playerRayXDelta, 2) + Math.Pow(playerRayYDelta, 2)); //distance
+        }
+
+        internal void RayCaster()
         {
             double rayAngle = GameState.player.Angle - PlayerHalfFov;
 
             for(int rayCount = 0; rayCount < ScreenWidth; rayCount++)
             {
-                Coords ray = new Coords(GameState.player.Pos.x, GameState.player.Pos.y);
+                double distance = CastRay(rayAngle);
+                int wallHeight = (int)Math.Floor(ScreeenHalfHeight / distance);
 
-                double rayCos = Math.Cos(DegToRad(rayAngle)) / RayCastingPrecision;
-                double raySin = Math.Sin(DegToRad(rayAngle)) / RayCastingPrecision;
+                framebuff[ConvertToFramebuffCoords(rayCount, (int)ScreeenHalfHeight)] = (byte)Gradient[(int)Math.Min(Gradient.Length - distance * ((double)Gradient.Length / 15.0),Gradient.Length - 1)];
 
-                //findig wall
-                bool foundWall = false;
-                //Coords wall = new Coords();
-                while (!foundWall)
-                {
-                    ray.x += rayCos;
-                    ray.y += raySin;
-
-                    Coords currentSearch = new Coords(Math.Floor(ray.x), Math.Floor(ray.y));
-
-                    if(GameState.map.Layout[(int) currentSearch.y, (int)currentSearch.x] == 1) {
-                        foundWall = true;
-                        //wall.x = currentSearch.x;
-                        //wall.y = currentSearch.y;
-                    }
-                }
-
-                double playerRayXDelta = GameState.player.Pos.x - ray.x;
-                double playerRayYDelta = GameState.player.Pos.y - ray.y;
-                // Pythagoras theorem
-                double disctance = Math.Sqrt(Math.Pow(playerRayXDelta, 2) + Math.Pow(playerRayYDelta, 2));
-
-                int wallHeight = (int)Math.Floor(ScreeenHalfHeight / disctance);
-
+                rayAngle += RayCasterIncrementAngle;
                 for(int i = 0; i < wallHeight; i++)
                 {
                     framebuff[ConvertToFramebuffCoords
-                        (x: rayCount
-                        ,y: (int)ScreeenHalfHeight + wallHeight / 2 + wallHeight-1
+                        (left: rayCount
+                        ,top: (int)ScreeenHalfHeight + wallHeight / 2 + wallHeight-1
                         )] = (byte)'@';
                 }
             }
@@ -92,7 +102,7 @@ namespace TerminalDoom
         public void Render(GameState gameState)
         {
             GameState = gameState;
-            RacCaster();
+            RayCaster();
         }
 
         private void DrawScreen(byte[] framebuff)
@@ -110,6 +120,7 @@ namespace TerminalDoom
             ScreeenHalfHeight = Console.BufferHeight / 2;
             PlayerHalfFov = state.player.FOV / 2;
             RayCasterIncrementAngle = state.player.FOV / ScreenWidth;
+            Gradient = " .:-=+*#%@";
 
             RayCastingPrecision = 64;
 

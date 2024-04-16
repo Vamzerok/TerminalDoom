@@ -19,6 +19,11 @@ namespace TerminalDoom.Assets
         private int[,] _layout;
         public int[,] Layout { get { return _layout; } }
 
+        public int GetValueAtRealPosition(double x, double y)
+        {
+            return _layout[(int)(y + _size.y / 2), (int)(x + _size.x / 2)]; //TODO! fix this crap
+        }
+
         public Map(string filePath)
         {
             string[] fileLines = File.ReadAllLines(filePath);

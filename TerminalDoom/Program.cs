@@ -29,7 +29,7 @@ namespace TerminalDoom
 
             //only for debugging
             string Path = $"./{DateTime.Now.Month}{DateTime.Now.Day}.txt";
-            string comment = "- Console.KeyAvailable";
+            string comment = "new Coords in raycaster while not found wall";
             File.AppendAllText(Path, $"\n------------------------\t[{comment}]\n");
 
             Stream STDOUT = Console.OpenStandardOutput();
@@ -46,6 +46,10 @@ namespace TerminalDoom
             stopw.Start();
 
             Renderer rend = new Renderer(gameState);
+            GameLogic gaml = new GameLogic();
+
+            int fps = 0;
+            int frameCap = 60;
             
             //-------------[Main gameloop - Start] ------------- 
             while (true)
@@ -58,17 +62,18 @@ namespace TerminalDoom
                 gameState = GameLogic.Update(gameState,"");
 
                 //renderer
-                rend.Render(gameState);
-                Console.ReadKey();
+                //rend.Render(gameState);
+                
                 //Renderer.DrawScreen(framebuff, STDOUT);
 
                 //------------//------------//------------//------------//end measurement 
                 count++;
-                long frameCalculationEnd = stopw.ElapsedMilliseconds; 
+                long frameCalculationEnd = stopw.ElapsedMilliseconds;
 
                 if (stopw.ElapsedMilliseconds - prevFrame > 1000)
                 {
                     File.AppendAllText(Path, $"{count}fps; {frameCalculationEnd - frameCalculationStart}ms; ({Console.BufferHeight},{Console.BufferWidth}); {stopw.ElapsedMilliseconds - prevFrame}ms\n");
+                    gameState.fps = count;
                     Console.Beep(2000, 50);
 
                     if (countUntilQuit <= 1) return;
