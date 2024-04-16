@@ -7,7 +7,7 @@ using TerminalDoom.Assets;
 
 namespace TerminalDoom
 {
-    internal class GameState
+    internal class GameState : GameLogic
     {
         public Player player;
         public List<GameObject> gameObjects;
