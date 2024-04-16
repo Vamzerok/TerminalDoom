@@ -49,14 +49,13 @@
     <Compile Include="Assets\GameObject.cs" />
     <Compile Include="GameState.cs" />
     <Compile Include="Initialization\Initialize.cs" />
-    <Compile Include="InputHandling.cs" />
     <Compile Include="MainGameLoop\GameLogic.cs" />
     <Compile Include="Assets\Player.cs" />
     <Compile Include="Initialization\Menu.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MainGameLoop\Renderer.cs" />
-    <Compile Include="MainGameLoop\UserInput.cs" />
+    <Compile Include="MainGameLoop\UserInputListener.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

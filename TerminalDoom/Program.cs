@@ -15,7 +15,6 @@ namespace TerminalDoom
 {
     internal class Program
     {
-
         static void Main(string[] args)
         {
             //------------- [Initialization - Start] ------------- 
@@ -30,11 +29,12 @@ namespace TerminalDoom
 
             //only for debugging
             string Path = $"./{DateTime.Now.Month}{DateTime.Now.Day}.txt";
-            string comment = "User input test";
+            string comment = "- Console.KeyAvailable";
             File.AppendAllText(Path, $"\n------------------------\t[{comment}]\n");
 
             Stream STDOUT = Console.OpenStandardOutput();
             Stream STDIN = Console.OpenStandardInput();
+
             StreamReader sr = new StreamReader(STDIN);
             char[] input = new char[6];
             sr.ReadAsync(input, 0, 6);
@@ -42,8 +42,10 @@ namespace TerminalDoom
             Stopwatch stopw = new Stopwatch();
             long prevFrame = 0;
             int count = 0;
-            int countUntilQuit = 15;
+            int countUntilQuit = 5;
             stopw.Start();
+
+            UserInputListener listener = new UserInputListener();
             
             //-------------[Main gameloop - Start] ------------- 
             while (true)
@@ -51,9 +53,6 @@ namespace TerminalDoom
                 long frameCalculationStart = stopw.ElapsedMilliseconds;
                 //------------//------------//------------//------------//start measurement 
 
-                //user input
-                //UserInput.GetInput(sr);
-               
 
                 Thread.Sleep(500);
 
@@ -61,8 +60,12 @@ namespace TerminalDoom
                 gameState = GameLogic.Update(gameState,"");
 
                 //renderer
-                //framebuff = Renderer.Render(gameState, framebuff);
-                //Renderer.DrawScreen(framebuff, STDOUT);
+                framebuff = Renderer.Render(gameState, framebuff);
+                Renderer.DrawScreen(framebuff, STDOUT);
+                if (Console.KeyAvailable)
+                {
+                    Console.ReadKey();
+                }
 
                 //------------//------------//------------//------------//end measurement 
                 count++;
