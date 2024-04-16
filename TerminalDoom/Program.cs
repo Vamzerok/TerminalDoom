@@ -62,7 +62,7 @@ namespace TerminalDoom
                 gameState = GameLogic.Update(gameState,"");
 
                 //renderer
-                //rend.Render(gameState);
+                rend.Render(gameState);
                 
                 //Renderer.DrawScreen(framebuff, STDOUT);
 

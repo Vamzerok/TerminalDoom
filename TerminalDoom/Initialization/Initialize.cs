@@ -13,7 +13,7 @@ namespace TerminalDoom.Initialization
         { 
             GameState state = new GameState();
 
-            state.player = new Player(120,new Coords(1,1), 0);
+            state.player = new Player(90,new Coords(0,0), 0);
             state.map = new Map("./map1.txt");
             state.exit = false;
 

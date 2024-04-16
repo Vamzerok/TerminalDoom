@@ -45,6 +45,10 @@ namespace TerminalDoom
 
         internal double CastRay(double rayAngle)
         {
+           /* if (rayAngle == -18)
+            {
+
+            }*/
             Coords ray = new Coords(GameState.player.Pos.x, GameState.player.Pos.y);
 
             double rayCos = Math.Cos(DegToRad(rayAngle)) / RayCastingPrecision;
@@ -56,18 +60,35 @@ namespace TerminalDoom
             //Coords wall = new Coords();
             while (!foundWall)
             {
+                Coords tempRay = new Coords();
+                tempRay.x = ray.x;
+                tempRay.y = ray.y;
                 ray.x += rayCos;
                 ray.y += raySin;
+
+                /*if(Math.Abs((int)tempRay.x - (int)ray.x) > 0 || Math.Abs((int)tempRay.y - (int)ray.y) > 0)
+                {
+
+                }*/
 
                 currentSearch.x = Math.Floor(ray.x);
                 currentSearch.y = Math.Floor(ray.y);
 
-                if (GameState.map.GetValueAtRealPosition(currentSearch.x, currentSearch.y) == 1) //this can go out of bounds 
+                Coords matrixCoords = GameState.map.GetValueAtRealPosition(currentSearch.x,currentSearch.y);
+                try
                 {
-                    foundWall = true;
-                    //wall.x = currentSearch.x;
-                    //wall.y = currentSearch.y;
+                    if (GameState.map.Layout[(int)matrixCoords.y, (int)matrixCoords.x] == 1) //this can go out of bounds 
+                    {
+                        foundWall = true;
+                        //wall.x = currentSearch.x;
+                        //wall.y = currentSearch.y;
+                    }
                 }
+                catch
+                {
+                    foundWall= true;
+                }
+                
             }
 
             double playerRayXDelta = GameState.player.Pos.x - ray.x;
@@ -85,18 +106,20 @@ namespace TerminalDoom
                 double distance = CastRay(rayAngle);
                 int wallHeight = (int)Math.Floor(ScreeenHalfHeight / distance);
 
-                framebuff[ConvertToFramebuffCoords(rayCount, (int)ScreeenHalfHeight)] = (byte)Gradient[(int)Math.Min(Gradient.Length - distance * ((double)Gradient.Length / 15.0),Gradient.Length - 1)];
+                byte grad = (byte)Gradient[(int)Math.Min(Gradient.Length - distance * ((double)Gradient.Length / 15.0), Gradient.Length - 1)];
+                //framebuff[ConvertToFramebuffCoords(rayCount, (int)ScreeenHalfHeight)] = grad;
 
                 rayAngle += RayCasterIncrementAngle;
                 for(int i = 0; i < wallHeight; i++)
                 {
                     framebuff[ConvertToFramebuffCoords
                         (left: rayCount
-                        ,top: (int)ScreeenHalfHeight + wallHeight / 2 + wallHeight-1
-                        )] = (byte)'@';
+                        ,top: (int)ScreeenHalfHeight + wallHeight / 2 - (wallHeight-i)
+                        )] = grad;
                 }
             }
             DrawScreen(framebuff);
+            Console.ReadKey();
         }
 
         public void Render(GameState gameState)

@@ -19,9 +19,17 @@ namespace TerminalDoom.Assets
         private int[,] _layout;
         public int[,] Layout { get { return _layout; } }
 
-        public int GetValueAtRealPosition(double x, double y)
+        /*public int GetValueAtRealPosition(double x, double y)
         {
-            return _layout[(int)(y + _size.y / 2), (int)(x + _size.x / 2)]; //TODO! fix this crap
+            int matrixLeft = (int)Math.Floor(x + _size.x / 2);
+            int matricTop = (int)Math.Floor(y + _size.y / 2);
+            return _layout[matricTop, matrixLeft]; //TODO! fix this crap
+        }*/
+        public Coords GetValueAtRealPosition(double x, double y)
+        {
+            int matrixLeft = (int)Math.Floor(x + _size.x / 2);
+            int matricTop = (int)Math.Floor(y + _size.y / 2);
+            return new Coords(matrixLeft, matricTop); //TODO! fix this crap
         }
 
         public Map(string filePath)
