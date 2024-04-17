@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using TerminalDoom.Assets;
@@ -58,36 +59,28 @@ namespace TerminalDoom
 
         internal double CastRay(double rayAngle)
         {
-           /* if (rayAngle == -18)
-            {
-
-            }*/
-            Coords ray = new Coords(GameState.player.Pos.x, GameState.player.Pos.y);
+            double rayX = GameState.player.Pos.x;
+            double rayY = GameState.player.Pos.y;
 
             double rayCos = Math.Cos(DegToRad(rayAngle)) / RayCastingPrecision;
             double raySin = Math.Sin(DegToRad(rayAngle)) / RayCastingPrecision;
 
             //findig wall
             bool foundWall = false;
-            int currentSearchX = 0;
-            int currentSearchY = 0;
             while (!foundWall)
             {
-                ray.x += rayCos;
-                ray.y += raySin;
+                rayX += rayCos;
+                rayY += raySin;
 
-                currentSearchX = (int)Math.Floor(ray.x);
-                currentSearchY = (int)Math.Floor(ray.y);
-
-                if (GameState.map.Layout[currentSearchY, currentSearchX] == 1)
+                if (GameState.map.Layout[(int)Math.Floor(rayY), (int)Math.Floor(rayX)] == 1)
                 {
                     foundWall = true;
                 }
 
             }
 
-            double playerRayXDelta = GameState.player.Pos.x - ray.x;
-            double playerRayYDelta = GameState.player.Pos.y - ray.y;
+            double playerRayXDelta = GameState.player.Pos.x - rayX;
+            double playerRayYDelta = GameState.player.Pos.y - rayY;
 
             // Pythagoras theorem
             double distance = Math.Sqrt(Math.Pow(playerRayXDelta, 2) + Math.Pow(playerRayYDelta, 2));
@@ -105,7 +98,7 @@ namespace TerminalDoom
             for(int rayCount = 0; rayCount < ScreenWidth; rayCount++)
             {
                 double distance = (double) CastRay(rayAngle);
-                int wallHeight = (int) Math.Floor(ScreenHeight / distance);
+                int wallHeight = (int) Math.Floor(ScreenHeight / (distance * 0.7)) ;
 
                 byte gradient = (byte)Gradient[
                     (int) Math.Min(
@@ -116,7 +109,7 @@ namespace TerminalDoom
                         )
                     ];
 
-                DrawVerticalLines(rayCount, 0, (int)ScreenHeight, gradient);
+                DrawVerticalLines(rayCount, (int) ScreeenHalfHeight - wallHeight, (int)ScreeenHalfHeight + wallHeight, gradient);
 
                 rayAngle += RayCasterIncrementAngle;
             }
@@ -139,9 +132,9 @@ namespace TerminalDoom
             ScreeenHalfHeight = (double) Console.BufferHeight / 2;
             PlayerHalfFov = (double) state.player.FOV / 2;
             RayCasterIncrementAngle = (double)state.player.FOV / ScreenWidth;
-            //Gradient = "@%#*+=-:. ";
-            Gradient = "0123456789";
-            RenderDistance = 30;
+            Gradient = "@%#*+=-:. ";
+            //Gradient = "0123456789";
+            RenderDistance = 18;
 
             RayCastingPrecision = 32;
 
