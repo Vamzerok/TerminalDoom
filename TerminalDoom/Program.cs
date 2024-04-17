@@ -83,16 +83,16 @@ namespace TerminalDoom
 
                 //renderer
                 rend.Render(gameState);
-                
-                //Renderer.DrawScreen(framebuff, STDOUT);
 
+                Thread.Sleep(1000/frameCap);
                 //------------//------------//------------//------------//end measurement 
                 count++;
-                //long frameCalculationEnd = stopw.ElapsedMilliseconds;
+                long frameCalculationEnd = stopw.ElapsedMilliseconds;
+
 
                 if (stopw.ElapsedMilliseconds - prevFrame > 1000)
                 {
-                    //File.AppendAllText(Path, $"{count}fps; dt: {gameState.deltaTime};{frameCalculationEnd - frameCalculationStart}ms; ({Console.BufferHeight},{Console.BufferWidth}); {stopw.ElapsedMilliseconds - prevFrame}ms\n");
+                    File.AppendAllText(Path, $"{count}fps; dt: {gameState.deltaTime};{frameCalculationEnd - frameCalculationStart}ms; ({Console.BufferHeight},{Console.BufferWidth}); {stopw.ElapsedMilliseconds - prevFrame}ms\n");
                     gameState.fps = count;
                     //Console.Beep(2000, 50);
 

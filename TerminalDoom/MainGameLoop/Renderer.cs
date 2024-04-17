@@ -98,7 +98,7 @@ namespace TerminalDoom
             for(int rayCount = 0; rayCount < ScreenWidth; rayCount++)
             {
                 double distance = (double) CastRay(rayAngle);
-                int wallHeight = (int) Math.Floor(ScreenHeight / (distance * 0.7)) ;
+                int wallHeight = (int) Math.Floor(ScreenHeight / (distance)) ;
 
                 byte gradient = (byte)Gradient[
                     (int) Math.Min(
@@ -112,6 +112,12 @@ namespace TerminalDoom
                 DrawVerticalLines(rayCount, (int) ScreeenHalfHeight - wallHeight, (int)ScreeenHalfHeight + wallHeight, gradient);
 
                 rayAngle += RayCasterIncrementAngle;
+            }
+            int c = 0;
+            foreach(char digit in GameState.fps.ToString())
+            {
+                framebuff[c] = (byte)digit;
+                c++;
             }
             DrawScreen(framebuff);
         }
@@ -134,7 +140,7 @@ namespace TerminalDoom
             RayCasterIncrementAngle = (double)state.player.FOV / ScreenWidth;
             Gradient = "@%#*+=-:. ";
             //Gradient = "0123456789";
-            RenderDistance = 18;
+            RenderDistance = (GameState.map.Size.x + 2) / 2;
 
             RayCastingPrecision = 32;
 

@@ -14,8 +14,8 @@ namespace TerminalDoom.Initialization
             //Menu.Start();
             GameState state = new GameState();
 
-            state.player = new TerminalDoom.Player(60,new Coords(6,6), 0);
-            state.map = new Map("./map2.txt");
+            state.player = new TerminalDoom.Player(90,new Coords(6,6), 0);
+            state.map = new Map("./map3.txt");
             state.exit = false;
 
             return state;
