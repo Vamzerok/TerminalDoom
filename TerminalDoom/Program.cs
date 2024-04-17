@@ -9,12 +9,29 @@ using System.Security.AccessControl;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using TerminalDoom.Assets;
 using TerminalDoom.Initialization;
 
 namespace TerminalDoom
 {
     internal class Program
     {
+        [DllImport("kernel32.dll")]
+        private static extern IntPtr GetStdHandle(int handle);
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Coord
+        {
+            public short X;
+            public short Y;
+
+            public Coord(short X, short Y)
+            {
+                this.X = X;
+                this.Y = Y;
+            }
+        };
+        [DllImport("kernel32.dll", SetLastError = true)]
+        private static extern bool SetConsoleDisplayMode(IntPtr ConsoleOutput, uint Flags, out Coord NewScreenBufferDimensions);
         static void Main(string[] args)
         {
             //------------- [Initialization - Start] ------------- 
@@ -50,7 +67,10 @@ namespace TerminalDoom
 
             gameState.fps = 60;
             int frameCap = 60;
-            
+
+            IntPtr hConsole = GetStdHandle(-11);
+            SetConsoleDisplayMode(hConsole, 1, out Coord b1);
+
             //-------------[Main gameloop - Start] ------------- 
             while (true)
             {
@@ -63,21 +83,21 @@ namespace TerminalDoom
 
                 //renderer
                 rend.Render(gameState);
-                
-                //Renderer.DrawScreen(framebuff, STDOUT);
 
+                Thread.Sleep(1000/frameCap);
                 //------------//------------//------------//------------//end measurement 
                 count++;
                 long frameCalculationEnd = stopw.ElapsedMilliseconds;
 
+
                 if (stopw.ElapsedMilliseconds - prevFrame > 1000)
                 {
-                    File.AppendAllText(Path, $"{count}fps; {frameCalculationEnd - frameCalculationStart}ms; ({Console.BufferHeight},{Console.BufferWidth}); {stopw.ElapsedMilliseconds - prevFrame}ms\n");
+                    File.AppendAllText(Path, $"{count}fps; dt: {gameState.deltaTime};{frameCalculationEnd - frameCalculationStart}ms; ({Console.BufferHeight},{Console.BufferWidth}); {stopw.ElapsedMilliseconds - prevFrame}ms\n");
                     gameState.fps = count;
-                    Console.Beep(2000, 50);
+                    //Console.Beep(2000, 50);
 
-                    if (countUntilQuit <= 1) return;
-                    countUntilQuit--;
+                    //if (countUntilQuit <= 1) return;
+                    //countUntilQuit--;
 
                     count = 0;
                     prevFrame = stopw.ElapsedMilliseconds;
