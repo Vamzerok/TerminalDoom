@@ -16,7 +16,7 @@ namespace TerminalDoom
         {
             get
             {
-                return 1 / this.fps;
+                return (double) 1 / this.fps;
             }
         }
         public int fps;

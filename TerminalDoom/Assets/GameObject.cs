@@ -10,7 +10,7 @@ namespace TerminalDoom
     internal class GameObject
     {
         public Coords Pos { get; set; }
-        public float Angle { get; set; }
+        public double Angle { get; set; }
         public float Speed { get; set; }
     }
 }

@@ -14,8 +14,14 @@ namespace TerminalDoom
         {
             //angel ++ 360-nal 0
             //space keypress-> coords  
-            
 
+            double rotationSpeed = 5;
+
+            gameState.player.Angle += rotationSpeed * gameState.deltaTime;
+            if(gameState.player.Angle >= 360)
+            {
+                gameState.player.Angle = 0;
+            }
 
             return gameState;
         }

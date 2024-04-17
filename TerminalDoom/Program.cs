@@ -42,13 +42,13 @@ namespace TerminalDoom
             Stopwatch stopw = new Stopwatch();
             long prevFrame = 0;
             int count = 0;
-            int countUntilQuit = 5;
+            int countUntilQuit = 15;
             stopw.Start();
 
             Renderer rend = new Renderer(gameState);
             GameLogic gaml = new GameLogic();
 
-            int fps = 0;
+            gameState.fps = 60;
             int frameCap = 60;
             
             //-------------[Main gameloop - Start] ------------- 
