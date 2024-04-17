@@ -11,7 +11,7 @@ namespace TerminalDoom.Initialization
     {
         public static GameState Start()
         {
-           // Menu.Start();
+            Menu.Start();
             GameState state = new GameState();
 
             state.player = new TerminalDoom.Player(60,new Coords(1,1), 0);
