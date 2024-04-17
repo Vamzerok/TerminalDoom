@@ -43,12 +43,12 @@ namespace TerminalDoom.Assets
 
             //store the layout
             _layout = new int[(int)_size.y, (int)_size.x];
-            for(int i = 1; i < fileLines.Length; i++)
+            for(int i = 0; i < _size.y; i++)
             {
-                string[] row = fileLines[i].Split(';');
-                for(int j = 0; j < row.Length -1; j++)
+                string[] row = fileLines[i+1].Split(';');
+                for(int j = 0; j < _size.x; j++)
                 {
-                    _layout[i-1, j] = int.Parse(row[j]);
+                    _layout[i, j] = int.Parse(row[j]);
                 }
             }
         }
