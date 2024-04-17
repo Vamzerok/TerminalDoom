@@ -48,6 +48,7 @@
     <Compile Include="Assets\Map.cs" />
     <Compile Include="Assets\GameObject.cs" />
     <Compile Include="GameState.cs" />
+    <Compile Include="Initialization\Gomb.cs" />
     <Compile Include="Initialization\Initialize.cs" />
     <Compile Include="MainGameLoop\GameLogic.cs" />
     <Compile Include="Assets\Player.cs" />

@@ -10,10 +10,11 @@ namespace TerminalDoom.Initialization
     internal class Initialize
     {
         public static GameState Start()
-        { 
+        {
+           // Menu.Start();
             GameState state = new GameState();
 
-            state.player = new Player(90,new Coords(15,15), 0);
+            state.player = new TerminalDoom.Player(60,new Coords(1,1), 0);
             state.map = new Map("./map1.txt");
             state.exit = false;
 
