@@ -11,11 +11,11 @@ namespace TerminalDoom.Initialization
     {
         public static GameState Start()
         {
-            Menu.Start();
+            //Menu.Start();
             GameState state = new GameState();
 
-            state.player = new TerminalDoom.Player(60,new Coords(1,1), 0);
-            state.map = new Map("./map1.txt");
+            state.player = new TerminalDoom.Player(60,new Coords(6,6), 0);
+            state.map = new Map("./map2.txt");
             state.exit = false;
 
             return state;

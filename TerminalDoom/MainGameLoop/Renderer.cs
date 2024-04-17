@@ -19,6 +19,8 @@ namespace TerminalDoom
         private double PlayerHalfFov;
         private double RayCasterIncrementAngle;
         private string Gradient;
+        private double RenderDistance;
+        private byte FloorAndCeilingTexture = (byte)' ';
 
         private double RayCastingPrecision;
 
@@ -36,11 +38,22 @@ namespace TerminalDoom
             return ScreenWidth * top + left;
         }
 
-        internal void DrawLineToFrameBuff(int x1, int y1, int x2, int y2, char gradient)
+        internal void DrawPoint(int left, int top, byte b)
         {
-            int point1 = ConvertToFramebuffCoords(x1, y1);
-            int point2 = ConvertToFramebuffCoords(x2, y2);
-            //framebuff[p]
+            framebuff[ConvertToFramebuffCoords(left, top)] = b;
+        }
+
+        internal void DrawVerticalLines(int left, int topFrom, int topTo, byte b)
+        {
+            for(int i = 0; i < ScreenHeight; i++)
+            {
+                DrawPoint(left, i, (i <= topTo && i >= topFrom) ? (byte)b : FloorAndCeilingTexture);
+            }
+        }
+        private void DrawScreen(byte[] framebuff)
+        {
+            STDOUT.Write(framebuff, 0, framebuff.Length);
+            Console.SetCursorPosition(0,0);
         }
 
         internal double CastRay(double rayAngle)
@@ -73,12 +86,13 @@ namespace TerminalDoom
 
             }
 
-
             double playerRayXDelta = GameState.player.Pos.x - ray.x;
             double playerRayYDelta = GameState.player.Pos.y - ray.y;
-            // Pythagoras theorem
 
+            // Pythagoras theorem
             double distance = Math.Sqrt(Math.Pow(playerRayXDelta, 2) + Math.Pow(playerRayYDelta, 2));
+
+            //Fish eye fix
             distance = distance * Math.Cos(DegToRad(rayAngle - GameState.player.Angle));
 
             return distance; 
@@ -90,53 +104,23 @@ namespace TerminalDoom
 
             for(int rayCount = 0; rayCount < ScreenWidth; rayCount++)
             {
-                double distance = (double) CastRay(rayAngle) / 3;
-                int wallHeight = (int)Math.Floor(ScreeenHalfHeight / distance);
+                double distance = (double) CastRay(rayAngle);
+                int wallHeight = (int) Math.Floor(ScreenHeight / distance);
 
-                byte grad = (byte)Gradient[(int)Math.Min(Gradient.Length - distance * ((double)Gradient.Length / 15), Gradient.Length - 1)];
-                framebuff[ConvertToFramebuffCoords(rayCount, (int)ScreeenHalfHeight)] = grad;
+                byte gradient = (byte)Gradient[
+                    (int) Math.Min(
+                            Math.Floor(
+                                distance * (Gradient.Length / RenderDistance)
+                            )
+                            ,Gradient.Length - 1
+                        )
+                    ];
+
+                DrawVerticalLines(rayCount, 0, (int)ScreenHeight, gradient);
 
                 rayAngle += RayCasterIncrementAngle;
-
-                //up 
-                for(int i = 0; i < wallHeight; i++)
-                {
-                    try
-                    {
-                        framebuff[ConvertToFramebuffCoords
-                        (left: rayCount
-                        , top: (int)ScreeenHalfHeight + ((int)Math.Min(wallHeight, ScreeenHalfHeight - 1)) - ((int)Math.Min(wallHeight, ScreeenHalfHeight - 1) - i)
-                        )] = grad;
-                    }
-                    catch
-                    {
-                        
-                    }
-                    
-                }
-
-                //down
-                for (int i = 0; i < wallHeight; i++)
-                {
-                    try
-                    {
-                        framebuff[ConvertToFramebuffCoords
-                        (left: rayCount
-                        , top: (int)ScreeenHalfHeight - ((int)Math.Min(wallHeight, ScreeenHalfHeight - 1)) + ((int)Math.Min(wallHeight, ScreeenHalfHeight - 1) - i)
-                        )] = grad;
-                    }
-                    catch
-                    {
-
-                    }
-                    
-                }
             }
             DrawScreen(framebuff);
-            for(int i = 0; i < framebuff.Length; i++)
-            {
-                framebuff[i] = 0;
-            }
         }
 
         public void Render(GameState gameState)
@@ -145,24 +129,21 @@ namespace TerminalDoom
             RayCaster();
         }
 
-        private void DrawScreen(byte[] framebuff)
-        {
-            STDOUT.Write(framebuff, 0, framebuff.Length);
-        }
-
         public Renderer(GameState state)
         {
             GameState = state;
 
             ScreenWidth = Console.BufferWidth;
-            ScreenHeight = Console.BufferHeight;
+            ScreenHeight = Console.BufferHeight - 1;
             ScreenHalfWidth = (double) Console.BufferWidth / 2;
             ScreeenHalfHeight = (double) Console.BufferHeight / 2;
             PlayerHalfFov = (double) state.player.FOV / 2;
-            RayCasterIncrementAngle = (double) state.player.FOV / ScreenWidth;
-            Gradient = " .:-=+*#%@";
+            RayCasterIncrementAngle = (double)state.player.FOV / ScreenWidth;
+            //Gradient = "@%#*+=-:. ";
+            Gradient = "0123456789";
+            RenderDistance = 30;
 
-            RayCastingPrecision = 64;
+            RayCastingPrecision = 32;
 
             STDOUT = Console.OpenStandardOutput();
 
